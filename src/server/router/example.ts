@@ -1,16 +1,21 @@
 import { createRouter } from "./context";
 import { z } from "zod";
+import { getCharacter } from 'rickmortyapi'
+import { assert } from "console";
+
 
 export const exampleRouter = createRouter()
-  .query("hello", {
+  .query("get-person-by-id", {
     input: z
       .object({
-        text: z.string().nullish(),
+        id: z.number(),
       })
-      .nullish(),
-    resolve({ input }) {
+      ,
+    async resolve({ input }) {
+      const person = await getCharacter(input.id);
       return {
-        greeting: `Hello ${input?.text ?? "world"}`,
+        name: person.data.name,
+        image: person.data.image
       };
     },
   })
